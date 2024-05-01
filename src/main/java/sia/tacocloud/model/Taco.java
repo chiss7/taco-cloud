@@ -3,6 +3,8 @@ package sia.tacocloud.model;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.data.annotation.Id;
+
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -10,6 +12,7 @@ import lombok.Data;
 @Data
 public class Taco {
 
+  @Id
   private Long id;
 
   @NotNull
