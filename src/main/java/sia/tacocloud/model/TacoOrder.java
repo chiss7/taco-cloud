@@ -6,14 +6,21 @@ import java.util.Date;
 import java.util.List;
 
 import org.hibernate.validator.constraints.CreditCardNumber;
-import org.springframework.data.annotation.Id;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
+@Entity
 // @Table -> Optional bc By default, the object is mapped to a table based on
 // the domain class name.
 public class TacoOrder implements Serializable {
@@ -21,6 +28,7 @@ public class TacoOrder implements Serializable {
   private static final long serialVersionUID = 1L;
 
   @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
   // @Column -> Optional bc All properties in TacoOrder will be mapped
@@ -52,6 +60,8 @@ public class TacoOrder implements Serializable {
 
   private Date placedAt = new Date();
 
+  @OneToMany(cascade = CascadeType.ALL)
+  @JoinColumn(name = "taco_order") // Esta columna será añadida en la tabla Taco
   private List<Taco> tacos = new ArrayList<>();
 
   public void addTaco(Taco taco) {
