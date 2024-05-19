@@ -1,6 +1,10 @@
 spring:
   thymeleaf:
     cache: false
-  datasource:
-    generate-unique-name: false
-    name: tacocloud
+  cassandra:
+    port: 9042
+    keyspace-name: tacocloud
+    schema-action: recreate
+    local-datacenter: datacenter1
+    # username: tacocloud
+    # password: password

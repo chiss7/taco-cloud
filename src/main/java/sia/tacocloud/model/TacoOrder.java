@@ -4,36 +4,33 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.validator.constraints.CreditCardNumber;
+import org.springframework.data.cassandra.core.mapping.Column;
+import org.springframework.data.cassandra.core.mapping.PrimaryKey;
+import org.springframework.data.cassandra.core.mapping.Table;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
+import com.datastax.oss.driver.api.core.uuid.Uuids;
+
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
-@Entity
-// @Table -> Optional bc By default, the object is mapped to a table based on
-// the domain class name.
+@Table("orders")
 public class TacoOrder implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private Long id;
+  // In this case, you’re unconcerned with ordering, so the id property is simply
+  // annotated with @PrimaryKey,
+  // designating it as both a partition key and a clustering key with default
+  // ordering.
+  @PrimaryKey
+  private UUID id = Uuids.timeBased();
 
-  // @Column -> Optional bc All properties in TacoOrder will be mapped
-  // automatically to columns based on their property names apart from id property
-  // (@Id is required).
   @NotBlank(message = "Delivery name is required.")
   private String deliveryName;
 
@@ -60,11 +57,10 @@ public class TacoOrder implements Serializable {
 
   private Date placedAt = new Date();
 
-  @OneToMany(cascade = CascadeType.ALL)
-  @JoinColumn(name = "taco_order") // Esta columna será añadida en la tabla Taco
-  private List<Taco> tacos = new ArrayList<>();
+  @Column("tacos")
+  private List<TacoUDT> tacos = new ArrayList<>();
 
-  public void addTaco(Taco taco) {
+  public void addTaco(TacoUDT taco) {
     this.tacos.add(taco);
   }
 }
