@@ -4,14 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import org.hibernate.validator.constraints.CreditCardNumber;
-import org.springframework.data.cassandra.core.mapping.Column;
-import org.springframework.data.cassandra.core.mapping.PrimaryKey;
-import org.springframework.data.cassandra.core.mapping.Table;
-
-import com.datastax.oss.driver.api.core.uuid.Uuids;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
@@ -19,17 +15,13 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
-@Table("orders")
+@Document
 public class TacoOrder implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  // In this case, you’re unconcerned with ordering, so the id property is simply
-  // annotated with @PrimaryKey,
-  // designating it as both a partition key and a clustering key with default
-  // ordering.
-  @PrimaryKey
-  private UUID id = Uuids.timeBased();
+  @Id
+  private String id;
 
   @NotBlank(message = "Delivery name is required.")
   private String deliveryName;
@@ -57,10 +49,9 @@ public class TacoOrder implements Serializable {
 
   private Date placedAt = new Date();
 
-  @Column("tacos")
-  private List<TacoUDT> tacos = new ArrayList<>();
+  private List<Taco> tacos = new ArrayList<>();
 
-  public void addTaco(TacoUDT taco) {
+  public void addTaco(Taco taco) {
     this.tacos.add(taco);
   }
 }

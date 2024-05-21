@@ -19,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import sia.tacocloud.model.Ingredient;
 import sia.tacocloud.model.Taco;
 import sia.tacocloud.model.TacoOrder;
-import sia.tacocloud.model.TacoUDT;
 import sia.tacocloud.model.Ingredient.Type;
 import sia.tacocloud.repository.IngredientRepository;
 
@@ -72,9 +71,8 @@ public class DesignTacoController {
       log.info(errors.toString());
       return "design";
     }
-    TacoUDT tacoUDT = new TacoUDT(taco.getName(), taco.getIngredients());
-    tacoOrder.addTaco(tacoUDT);
-    log.info("Processing TacoUDT {}", tacoUDT);
+    tacoOrder.addTaco(taco);
+    log.info("Processing Taco {}", taco);
     return "redirect:/orders/current";
   }
 
